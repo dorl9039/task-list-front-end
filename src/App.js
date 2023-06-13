@@ -16,6 +16,7 @@ const TASKS = [
 ];
 
 const App = () => {
+  //Checking
   return (
     <div className="App">
       <header className="App-header">
