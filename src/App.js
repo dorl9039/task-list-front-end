@@ -28,6 +28,16 @@ const App = () => {
         return task;
       }
     });
+
+    if (updatedTask.isComplete) {
+      axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/mark_complete`)
+      .then(console.log(`${updatedTask.id} marked complete`))
+      .catch(err => console.log('IF', err));
+    } else if (!updatedTask.isComplete) {
+      axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/mark_incomplete`)
+      .then(console.log(`${updatedTask.id} marked incomplete`))
+      .catch(err => console.log('ELSE', err));
+    }
     setTaskData(tasks);
   };
   
@@ -38,10 +48,10 @@ const App = () => {
   useEffect(() => {
     axios.get('https://task-list-api-c17.onrender.com/tasks')
     .then(response => {
-      setTaskData(response.data)
+      setTaskData(response.data);
     })
     .catch(err => console.log(err));
-  });
+  }, []);
   
   return (
     <div className="App">
