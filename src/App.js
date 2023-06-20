@@ -1,23 +1,25 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import TaskList from './components/TaskList.js';
 import './App.css';
+import axios from 'axios';
 
-const TASKS = [
-  {
-    id: 1,
-    title: 'Mow the lawn',
-    isComplete: false,
-  },
-  {
-    id: 2,
-    title: 'Cook Pasta',
-    isComplete: true,
-  },
-];
+// const TASKS = [
+//   {
+//     id: 1,
+//     title: 'Mow the lawn',
+//     isComplete: false,
+//   },
+//   {
+//     id: 2,
+//     title: 'Cook Pasta',
+//     isComplete: true,
+//   },
+// ];
 
 const App = () => {
-  //Checking
-  const[taskData, setTaskData] = useState(TASKS);
+  
+  
+  const[taskData, setTaskData] = useState([]);
   const updatedTaskData = updatedTask => {
     const tasks = taskData.map(task => {
       if(task.id === updatedTask.id){
@@ -28,11 +30,19 @@ const App = () => {
     });
     setTaskData(tasks);
   };
-
+  
   const deleteTask = (id) => {
     setTaskData((prev) => prev.filter((task)=> task.id !== id));
   };
-
+  
+  useEffect(() => {
+    axios.get('https://task-list-api-c17.onrender.com/tasks')
+    .then(response => {
+      setTaskData(response.data)
+    })
+    .catch(err => console.log(err));
+  });
+  
   return (
     <div className="App">
       <header className="App-header">
