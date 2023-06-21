@@ -7,6 +7,23 @@ import axios from 'axios';
 
 const App = () => {
   const[taskData, setTaskData] = useState([]);
+  //add taskDataConvert to convert is_complete
+  const taskDataConvert = (res) => {
+    return res.map((task) => {
+      return{...task, isComplete: task.is_complete};
+    });
+  };
+
+  useEffect(() => {
+    axios.get('https://task-list-api-c17.onrender.com/tasks')
+    .then(response => {
+      //setTaskData(response.data);
+      setTaskData(()=> taskDataConvert(response.data));
+    })
+    .catch(err => console.log(err));
+  }, []);
+  
+
   const updateTaskData = updatedTask => {
     //Start with path request, use callback style with setTaskData
     const status = updatedTask.isComplete ? 'mark_complete' : 'mark_incomplete';
@@ -27,14 +44,6 @@ const App = () => {
     )
     .catch((err) => console.log(err));
   };
-  
-  useEffect(() => {
-    axios.get('https://task-list-api-c17.onrender.com/tasks')
-    .then(response => {
-      setTaskData(response.data);
-    })
-    .catch(err => console.log(err));
-  }, []);
   
   const handleSubmit = (data) => {
     axios
