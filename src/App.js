@@ -3,24 +3,10 @@ import TaskList from './components/TaskList.js';
 import './App.css';
 import axios from 'axios';
 
-// const TASKS = [
-//   {
-//     id: 1,
-//     title: 'Mow the lawn',
-//     isComplete: false,
-//   },
-//   {
-//     id: 2,
-//     title: 'Cook Pasta',
-//     isComplete: true,
-//   },
-// ];
 
 const App = () => {
-  
-  
   const[taskData, setTaskData] = useState([]);
-  const updatedTaskData = updatedTask => {
+  const updateTaskData = updatedTask => {
     const tasks = taskData.map(task => {
       if(task.id === updatedTask.id){
         return updatedTask;
@@ -28,20 +14,15 @@ const App = () => {
         return task;
       }
     });
-
-    if (updatedTask.isComplete) {
-      axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/mark_complete`)
-      .then(console.log(`${updatedTask.id} marked complete`))
-      .catch(err => console.log('IF', err));
-    } else if (!updatedTask.isComplete) {
-      axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/mark_incomplete`)
-      .then(console.log(`${updatedTask.id} marked incomplete`))
-      .catch(err => console.log('ELSE', err));
-    }
-    setTaskData(tasks);
+    //Start with path request, use callback style with setTaskData
+    const status = updatedTask.isComplete ? 'mark_complete' : 'mark_incomplete';
+    axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/${status}`)
+    .then(() => setTaskData(tasks))
+    .catch(err => console.log(err));
   };
   
   const deleteTask = (id) => {
+    //move into the .then
     setTaskData((prev) => prev.filter((task)=> task.id !== id));
     axios.delete(`https://task-list-api-c17.onrender.com/tasks/${id}`)
     .then((res) => console.log(res.data))
@@ -63,7 +44,7 @@ const App = () => {
       </header>
       <main>
         <div><TaskList tasks={taskData}
-           onUpdateTask={updatedTaskData}
+           onUpdateTask={updateTaskData}
            onDeleteTask= {deleteTask} /></div>
       </main>
     </div>

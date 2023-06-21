@@ -12,6 +12,7 @@ const TaskList = ({ tasks, onUpdateTask, onDeleteTask }) => {
           id={task.id}
           title={task.title}
           isComplete={task.isComplete}
+          //consider renaming onUpdate so it's not pretending to be an event handler
           onUpdate={onUpdateTask}
           onDelete = {onDeleteTask}
         />
