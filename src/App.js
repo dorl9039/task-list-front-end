@@ -16,10 +16,15 @@ import axios from 'axios';
 //   },
 // ];
 
+const kBaseUrl = 'https://task-list-api-theffy.onrender.com/tasks';
 const App = () => {
-  
-  
   const[taskData, setTaskData] = useState([]);
+
+  const taskDataConvert = (res) => {
+    return res.map((task) => {
+      return{...task, isComplete: task.is_complete};
+    });
+  };
   const updatedTaskData = updatedTask => {
     const tasks = taskData.map(task => {
       if(task.id === updatedTask.id){
@@ -30,11 +35,11 @@ const App = () => {
     });
 
     if (updatedTask.isComplete) {
-      axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/mark_complete`)
+      axios.patch(`${kBaseUrl}/${updatedTask.id}/mark_complete`)
       .then(console.log(`${updatedTask.id} marked complete`))
       .catch(err => console.log('IF', err));
     } else if (!updatedTask.isComplete) {
-      axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/mark_incomplete`)
+      axios.patch(`${kBaseUrl}/${updatedTask.id}/mark_incomplete`)
       .then(console.log(`${updatedTask.id} marked incomplete`))
       .catch(err => console.log('ELSE', err));
     }
@@ -43,15 +48,15 @@ const App = () => {
   
   const deleteTask = (id) => {
     setTaskData((prev) => prev.filter((task)=> task.id !== id));
-    axios.delete(`https://task-list-api-c17.onrender.com/tasks/${id}`)
+    axios.delete(`${kBaseUrl}/${id}`)
     .then((res) => console.log(res.data))
     .catch((err) => console.log(err));
   };
   
   useEffect(() => {
-    axios.get('https://task-list-api-c17.onrender.com/tasks')
+    axios.get(kBaseUrl)
     .then(response => {
-      setTaskData(response.data);
+      setTaskData(()=> taskDataConvert(response.data));
     })
     .catch(err => console.log(err));
   }, []);
