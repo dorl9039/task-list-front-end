@@ -7,25 +7,30 @@ import axios from 'axios';
 const App = () => {
   const[taskData, setTaskData] = useState([]);
   const updateTaskData = updatedTask => {
-    const tasks = taskData.map(task => {
-      if(task.id === updatedTask.id){
-        return updatedTask;
-      } else{
-        return task;
-      }
-    });
+  //   const tasks = taskData.map(task => {
+  //     if(task.id === updatedTask.id){
+  //       return updatedTask;
+  //     } else{
+  //       return task;
+  //     }
+  //   });
     //Start with path request, use callback style with setTaskData
     const status = updatedTask.isComplete ? 'mark_complete' : 'mark_incomplete';
     axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/${status}`)
-    .then(() => setTaskData(tasks))
+    .then(() => {
+      setTaskData(prev => prev.map(task => 
+        task.id === updatedTask.id ? updatedTask : task));
+    })
     .catch(err => console.log(err));
   };
   
   const deleteTask = (id) => {
     //move into the .then
-    setTaskData((prev) => prev.filter((task)=> task.id !== id));
+    //setTaskData((prev) => prev.filter((task)=> task.id !== id));
     axios.delete(`https://task-list-api-c17.onrender.com/tasks/${id}`)
-    .then((res) => console.log(res.data))
+    .then(() => setTaskData((prev) => prev.filter((task)=> task.id !== id))
+    //console.log(res.data)
+    )
     .catch((err) => console.log(err));
   };
   
