@@ -1,8 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import axios from 'axios';
+
 import TaskList from './components/TaskList.js';
 import NewTaskForm from './components/NewTaskForm.js';
+
 import './App.css';
-import axios from 'axios';
+
 
 
 const App = () => {
@@ -17,7 +20,6 @@ const App = () => {
   useEffect(() => {
     axios.get('https://task-list-api-c17.onrender.com/tasks')
     .then(response => {
-      //setTaskData(response.data);
       setTaskData(()=> taskDataConvert(response.data));
     })
     .catch(err => console.log(err));
@@ -25,7 +27,6 @@ const App = () => {
   
 
   const updateTaskData = updatedTask => {
-    //Start with path request, use callback style with setTaskData
     const status = updatedTask.isComplete ? 'mark_complete' : 'mark_incomplete';
     axios.patch(`https://task-list-api-c17.onrender.com/tasks/${updatedTask.id}/${status}`)
     .then(() => {
@@ -36,11 +37,8 @@ const App = () => {
   };
   
   const deleteTask = (id) => {
-    //move into the .then
-    //setTaskData((prev) => prev.filter((task)=> task.id !== id));
     axios.delete(`https://task-list-api-c17.onrender.com/tasks/${id}`)
     .then(() => setTaskData((prev) => prev.filter((task)=> task.id !== id))
-    //console.log(res.data)
     )
     .catch((err) => console.log(err));
   };
@@ -49,7 +47,7 @@ const App = () => {
     axios
       .post('https://task-list-api-c17.onrender.com/tasks', data)
       .then((res) => {
-        setTaskData([taskDataConvert(res.data), ...taskData]);
+        setTaskData(() => taskDataConvert([res.data.task, ...taskData]));
       })
       .catch((err) => console.log(err));
   };
